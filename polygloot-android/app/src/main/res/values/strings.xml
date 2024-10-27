@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">polygloot-android</string>
+    <string name="app_name">Polygloot</string>
+
+    <string name="action_play">Play</string>
+    <string name="action_microphone">Microphone</string>
+
+    <string name="translator_status_idle"/>
+    <string name="translator_status_listening">Listening</string>
+    <string name="translator_status_translating">Translating</string>
+    <string name="translator_status_processing">Processing</string>
+    <string name="translator_status_error">Error</string>
+    <string name="network_error_title">Server Error</string>
+    <string name="network_error_description">There has been an error on the server. Please try again later.</string>
+    <string name="translation_error_title">Translation Error</string>
+    <string name="translation_error_description">There has been an error while making the translation. Please try again later.</string>
+    <string name="audio_error_title">Recording Audio Error</string>
+    <string name="audio_error_description">There has been an error while recording your audio. Please check the microphone and audio permissions in your settings</string>
 </resources>

@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "polygloot-android"
 include(":app")
- 
+include(":polygloot-network")
