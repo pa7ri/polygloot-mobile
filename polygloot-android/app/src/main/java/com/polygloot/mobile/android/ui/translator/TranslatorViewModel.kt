@@ -90,7 +90,11 @@ class TranslatorViewModel @Inject constructor(
     ) {
         translatorStatus.value = TranslatorStatusLoading
         when (val result = withContext(Dispatchers.IO) {
-            repository.translateTextAndTTS(text, sourceLanguage.first, targetLanguage.first)
+            repository.translateTextAndTTS(
+                text,
+                getLanguage(translatorUser, true),
+                getLanguage(translatorUser, false)
+            )
         }) {
             is DomainResult.Success -> {
                 if (result.body?.text.isNullOrBlank() && result.body?.audio.isNullOrBlank()) {
@@ -130,12 +134,14 @@ class TranslatorViewModel @Inject constructor(
         }
     }
 
-    private fun getTargetUser(user: TranslatorUser): TranslatorUser {
-        return when (user) {
-            TranslatorUser.SOURCE -> TranslatorUser.TARGET
-            TranslatorUser.TARGET -> TranslatorUser.SOURCE
-        }
+    private fun getTargetUser(user: TranslatorUser): TranslatorUser = when (user) {
+        TranslatorUser.SOURCE -> TranslatorUser.TARGET
+        TranslatorUser.TARGET -> TranslatorUser.SOURCE
     }
+
+    private fun getLanguage(user: TranslatorUser, isSource: Boolean): String =
+        if ((user == TranslatorUser.SOURCE && !isSource) || (user == TranslatorUser.TARGET && isSource)) sourceLanguage.first
+        else targetLanguage.first
 
     private fun saveAudio(audioData: String, fileDir: String): File {
         val audioBytes = decodeBase64Audio(audioData)
@@ -148,11 +154,8 @@ class TranslatorViewModel @Inject constructor(
             prepare()
             start()
         }
-        mediaPlayer.setOnCompletionListener {
-            it.release()
-        }
-        mediaPlayer.setOnErrorListener { mp, _, _ ->
-            mp.release()
+        mediaPlayer.setOnCompletionListener { it.release() }
+        mediaPlayer.setOnErrorListener { mp, _, _ -> mp.release()
             true
         }
     }

@@ -69,7 +69,7 @@ class LoginActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(paddingValues)
                             .fillMaxSize()
-                            .padding(horizontal = 10.dp)
+                            .padding(top = 100.dp, start = 10.dp, end = 10.dp)
                     ) {
                         Icon(
                             modifier = Modifier.size(80.dp),
@@ -78,21 +78,23 @@ class LoginActivity : ComponentActivity() {
                             contentDescription = "Polygloot Logo",
                         )
                         LoginField(
+                            modifier = Modifier.fillMaxWidth().padding(top = 50.dp, start = 10.dp, end = 10.dp),
                             value = username,
-                            onValueChange = { username = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 50.dp)
+                            onValueChange = {
+                                username = it
+                                viewModel.loginDataChanged(username, password)
+                            }
                         )
                         PasswordField(
+                            modifier = Modifier.fillMaxWidth().padding(10.dp),
                             value = password,
-                            onValueChange = { password = it },
-                            submit = { },
-                            modifier = Modifier.fillMaxWidth()
+                            onValueChange = {
+                                password = it
+                                viewModel.loginDataChanged(username, password)
+                            }
                         )
                         Spacer(modifier = Modifier.weight(1f))
-                        Button(modifier = Modifier
-                            .fillMaxWidth(),
+                        Button(modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(4.dp),
                             colors = ButtonColors(
                                 containerColor = AccentPurple,

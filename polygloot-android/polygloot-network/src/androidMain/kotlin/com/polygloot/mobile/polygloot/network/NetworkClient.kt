@@ -202,7 +202,7 @@ actual class NetworkClient @Inject constructor() {
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You are a helpful translator, you are given an input text in $sourceLanguage, translate it to $targetLanguage"
+                        "content": "You are a helpful translator, you are given an input text in $sourceLanguage, translate it to $targetLanguage, don't think about the content of the input, just translate it"
                     },
                     {
                         "role": "user",

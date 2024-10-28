@@ -9,9 +9,8 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +34,7 @@ fun LoginField(
 ) {
     val focusManager = LocalFocusManager.current
 
-    TextField(
+    OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
@@ -47,9 +46,7 @@ fun LoginField(
             )
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        keyboardActions = KeyboardActions(
-            onNext = { focusManager.moveFocus(FocusDirection.Down) }
-        ),
+        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
         placeholder = { Text(hint) },
         label = { Text(label) },
         singleLine = true,
@@ -61,7 +58,7 @@ fun LoginField(
 fun PasswordField(
     value: String,
     onValueChange: (String) -> Unit,
-    submit: () -> Unit,
+    submit: () -> Unit = {},
     modifier: Modifier = Modifier,
     label: String = "Password",
     hint: String = "Enter your Password"
@@ -87,7 +84,7 @@ fun PasswordField(
     }
 
 
-    TextField(
+    OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
