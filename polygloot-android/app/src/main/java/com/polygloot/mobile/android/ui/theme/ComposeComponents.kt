@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import com.polygloot.mobile.android.R
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.SUPPORTED_LANGUAGES
 
-
 @Composable
 fun LanguagePicker(
     modifier: Modifier = Modifier,

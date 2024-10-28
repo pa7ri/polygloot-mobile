@@ -1,6 +1,8 @@
-package com.polygloot.mobile.polygloot.network.repository
+package com.polygloot.mobile.polygloot.network.repository.translator
 
 import com.polygloot.mobile.polygloot.network.model.TTSResponse
+import com.polygloot.mobile.polygloot.network.repository.DomainResult
+import com.polygloot.mobile.polygloot.network.repository.toDomainResult
 import com.polygloot.mobile.polygloot.network.service.TranslatorOpenAIService
 import java.io.File
 import javax.inject.Inject

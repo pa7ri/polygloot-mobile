@@ -9,7 +9,7 @@ import com.polygloot.mobile.android.ui.utils.AudioUtils.Companion.decodeBase64Au
 import com.polygloot.mobile.android.ui.utils.AudioUtils.Companion.encodeBase64Audio
 import com.polygloot.mobile.android.ui.utils.AudioUtils.Companion.saveAudioToInternalStorage
 import com.polygloot.mobile.polygloot.network.repository.DomainResult
-import com.polygloot.mobile.polygloot.network.repository.TranslatorRepository
+import com.polygloot.mobile.polygloot.network.repository.translator.TranslatorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,6 +1,7 @@
-package com.polygloot.mobile.polygloot.network.repository
+package com.polygloot.mobile.polygloot.network.repository.translator
 
 import com.polygloot.mobile.polygloot.network.model.TTSResponse
+import com.polygloot.mobile.polygloot.network.repository.DomainResult
 import java.io.File
 
 interface TranslatorRepository { //TODO: add domain result logic instead of returning raw data
