@@ -25,8 +25,7 @@ android {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "OPENAI_API_KEY", "\"${properties.getProperty("OPENAI_API_KEY")}\"")
-        buildConfigField("String", "POLYGLOOT_TESTING_USERNAME", "\"${properties.getProperty("POLYGLOOT_TESTING_USERNAME")}\"")
-        buildConfigField("String", "POLYGLOOT_TESTING_PASSWORD", "\"${properties.getProperty("POLYGLOOT_TESTING_PASSWORD")}\"")
+        buildConfigField("String", "POLYGLOOT_TESTING_CREDENTIALS", "\"${properties.getProperty("POLYGLOOT_TESTING_CREDENTIALS")}\"")
     }
 
     kotlin {

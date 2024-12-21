@@ -34,9 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.polygloot.mobile.android.R
-import com.polygloot.mobile.android.ui.theme.AccentPurple
 import com.polygloot.mobile.android.ui.theme.LoginField
 import com.polygloot.mobile.android.ui.theme.PasswordField
+import com.polygloot.mobile.android.ui.theme.PolyglootTheme
 import com.polygloot.mobile.android.ui.translator.TranslatorActivity
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.EXTRAS_LOGIN_USERNAME
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,65 +51,70 @@ class LoginActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            var username by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("") }
-            LaunchedEffect(Unit) {
-                viewModel.loginResult.observe(this@LoginActivity, Observer {
-                    val loginResult = it ?: return@Observer
-                    loginResult.error?.let { showLoginFailed(it) }
-                    loginResult.success?.let { startTranslatorActivity(it) }
-                })
-            }
+            PolyglootTheme {
+                var username by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+                LaunchedEffect(Unit) {
+                    viewModel.loginResult.observe(this@LoginActivity, Observer { it ->
+                        val loginResult = it ?: return@Observer
+                        loginResult.error?.let { showLoginFailed(it) }
+                        loginResult.success?.let { startTranslatorActivity(it) }
+                    })
+                }
 
-            Scaffold(
-                content = { paddingValues ->
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .fillMaxSize()
-                            .padding(top = 100.dp, start = 10.dp, end = 10.dp)
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(80.dp),
-                            painter = painterResource(id = R.mipmap.ic_logo),
-                            tint = AccentPurple,
-                            contentDescription = "Polygloot Logo",
-                        )
-                        LoginField(
-                            modifier = Modifier.fillMaxWidth().padding(top = 50.dp, start = 10.dp, end = 10.dp),
-                            value = username,
-                            onValueChange = {
-                                username = it
-                                viewModel.loginDataChanged(username, password)
+                Scaffold(
+                    content = { paddingValues ->
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(paddingValues)
+                                .fillMaxSize()
+                                .padding(top = 100.dp, start = 10.dp, end = 10.dp)
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(80.dp),
+                                painter = painterResource(id = R.mipmap.ic_logo),
+                                tint = MaterialTheme.colorScheme.primary,
+                                contentDescription = "Polygloot Logo",
+                            )
+                            LoginField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 50.dp, start = 10.dp, end = 10.dp),
+                                value = username,
+                                onValueChange = {
+                                    username = it
+                                    viewModel.loginDataChanged(username, password)
+                                }
+                            )
+                            PasswordField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp),
+                                value = password,
+                                onValueChange = {
+                                    password = it
+                                    viewModel.loginDataChanged(username, password)
+                                }
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Button(modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(4.dp),
+                                colors = ButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                                    disabledContainerColor = Color.DarkGray,
+                                    disabledContentColor = Color.Gray
+                                ), onClick = {
+                                    viewModel.login(username, password)
+                                }) {
+                                Text("Login".uppercase())
                             }
-                        )
-                        PasswordField(
-                            modifier = Modifier.fillMaxWidth().padding(10.dp),
-                            value = password,
-                            onValueChange = {
-                                password = it
-                                viewModel.loginDataChanged(username, password)
-                            }
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Button(modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(4.dp),
-                            colors = ButtonColors(
-                                containerColor = AccentPurple,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                                disabledContainerColor = Color.DarkGray,
-                                disabledContentColor = Color.Gray
-                            ), onClick = {
-                                viewModel.login(username, password)
-                            }) {
-                            Text("Login".uppercase())
                         }
                     }
-                }
-            )
-
+                )
+            }
         }
     }
 

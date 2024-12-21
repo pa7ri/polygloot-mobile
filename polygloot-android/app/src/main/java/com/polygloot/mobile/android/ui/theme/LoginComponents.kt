@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +43,7 @@ fun LoginField(
             Icon(
                 Icons.Default.Person,
                 contentDescription = "",
-                tint = AccentPurple
+                tint = MaterialTheme.colorScheme.primary
             )
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -70,7 +71,7 @@ fun PasswordField(
         Icon(
             imageVector = Icons.Default.Key,
             contentDescription = "",
-            tint = AccentPurple
+            tint = MaterialTheme.colorScheme.primary
         )
     }
     val trailingIcon = @Composable {
@@ -78,7 +79,7 @@ fun PasswordField(
             Icon(
                 if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                 contentDescription = "",
-                tint = AccentPurple
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }

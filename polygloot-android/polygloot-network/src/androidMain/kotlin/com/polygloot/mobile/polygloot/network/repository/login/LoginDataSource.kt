@@ -1,8 +1,8 @@
 package com.polygloot.mobile.polygloot.network.repository.login
 
 import com.polygloot.mobile.polygloot.network.model.LoggedInUser
+import com.polygloot.mobile.polygloot.network.model.getCredentials
 import com.polygloot.mobile.polygloot.network.repository.DomainResult
-import com.polygloot.mobile.polygloot.network.BuildConfig
 import java.util.UUID
 
 /**
@@ -12,8 +12,10 @@ class LoginDataSource {
 
     fun login(username: String, password: String): DomainResult<LoggedInUser> {
         return try {
-            if (username == BuildConfig.POLYGLOOT_TESTING_USERNAME && password == BuildConfig.POLYGLOOT_TESTING_PASSWORD) {
-                DomainResult.Success(LoggedInUser(UUID.randomUUID().toString(), "TestUser 101"))
+            if (getCredentials().contains(username) && getCredentials()[username] == password) {
+                DomainResult.Success(
+                    LoggedInUser(UUID.randomUUID().toString(), "TestUser - $username")
+                )
             } else DomainResult.Fail
         } catch (e: Throwable) {
             DomainResult.Fail

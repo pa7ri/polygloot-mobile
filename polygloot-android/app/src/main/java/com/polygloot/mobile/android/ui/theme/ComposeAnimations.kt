@@ -14,7 +14,7 @@ import com.polygloot.mobile.android.R
 @Composable
 fun PolyglootAnimation(
     modifier: Modifier = Modifier,
-    @RawRes animation: Int = R.raw.anim_loading,
+    @RawRes animation: Int = R.raw.anim_loading_dots,
     iterations: Int = LottieConstants.IterateForever,
     onAnimationEnd: () -> Unit = {}
 ) {

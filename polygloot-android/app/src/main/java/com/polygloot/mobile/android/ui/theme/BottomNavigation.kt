@@ -1,15 +1,11 @@
 package com.polygloot.mobile.android.ui.theme
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SupervisorAccount
-import androidx.compose.material.icons.filled.Translate
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.SupervisorAccount
-import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -29,16 +25,6 @@ val bottomNavItems = listOf(
         title = "Conversation",
         selectedIcon = Icons.Filled.SupervisorAccount,
         unselectedIcon = Icons.Outlined.SupervisorAccount
-    ),
-    BottomNavItem(
-        title = "Translator",
-        selectedIcon = Icons.Filled.Translate,
-        unselectedIcon = Icons.Outlined.Translate
-    ),
-    BottomNavItem(
-        title = "Favorites",
-        selectedIcon = Icons.Filled.Favorite,
-        unselectedIcon = Icons.Outlined.Favorite
     ),
     BottomNavItem(
         title = "Settings",

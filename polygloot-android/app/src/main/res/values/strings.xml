@@ -15,11 +15,16 @@
     <string name="translation_error_description">There has been an error while making the translation. Please try again later.</string>
     <string name="audio_error_title">Recording Audio Error</string>
     <string name="audio_error_description">There has been an error while recording your audio. Please check the microphone and audio permissions in your settings</string>
+    <string name="audio_stt_error_title">Transcript Audio Error</string>
+    <string name="audio_stt_error_description">There has been an error transcribing your voice. Please try again later</string>
+    <string name="audio_tts_error_title">Playing Audio Error</string>
+    <string name="audio_tts_error_description">There has been an error while playing the translation. Please try again later</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="action_swap">"Swap"</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>

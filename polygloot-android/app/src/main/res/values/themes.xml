@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.PolyglootApp" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowSplashScreenBackground">@color/purple_800</item>
+        <item name="android:windowSplashScreenBackground">?colorSurface</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_logo</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>
     </style>

@@ -11,13 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
-data object Dimensions {
-    val small = 8.dp
-    val medium = 16.dp
-    val large = 24.dp
-}
-
-
 val AccentPurple = Color(0xFF6200EE)
 val AccentPurpleLight = Color(0xFFBB86FC)
 val AccentOrange = Color(0xFFFF5722)

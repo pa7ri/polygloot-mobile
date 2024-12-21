@@ -20,11 +20,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,28 +39,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.polygloot.mobile.android.R
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.SUPPORTED_LANGUAGES
+import java.util.AbstractMap
 
 @Composable
 fun LanguagePicker(
     modifier: Modifier = Modifier,
-    languages: List<Pair<String, String>>,
-    preselected: Pair<String, String>,
-    onSelectionChanged: (selection: Pair<String, String>) -> Unit
+    languages: Map<String, String>,
+    preselected: Map.Entry<String, String>,
+    onSelectionChanged: (selection: Map.Entry<String, String>) -> Unit
 ) {
-    var selected by remember { mutableStateOf(preselected) }
+    //var selected by remember(preselected) { mutableStateOf(preselected) }
     var expanded by remember { mutableStateOf(false) }
 
     Box {
         Column(modifier = modifier) {
-            OutlinedTextField(
+            TextField(
                 modifier = Modifier
                     .width(150.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceContainerLow,
-                        shape = RoundedCornerShape(50.dp)
-                    ),
-                value = (selected.second),
-                shape = RoundedCornerShape(50.dp),
+                    .background(color = MaterialTheme.colorScheme.surface),
+                colors = TextFieldDefaults.colors().copy(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                ),
+                value = preselected.value,
                 onValueChange = { },
                 trailingIcon = { Icon(Icons.Outlined.KeyboardArrowDown, null) },
                 readOnly = true
@@ -70,16 +70,15 @@ fun LanguagePicker(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                languages.forEach {
+                languages.filterKeys { it != preselected.key }.forEach {
                     DropdownMenuItem(
                         onClick = {
                             onSelectionChanged(it)
-                            selected = it
                             expanded = false
                         },
                         text = {
                             Text(
-                                text = (it.second),
+                                text = (it.value),
                                 modifier = Modifier
                                     .padding(10.dp)
                                     .wrapContentWidth()
@@ -107,19 +106,18 @@ fun LanguagePicker(
 fun CardTranslationText(
     modifier: Modifier = Modifier,
     contentText: String,
-    languageSelected: Pair<String, String> = "Spanish" to "Spanish",
-    languages: List<Pair<String, String>> = SUPPORTED_LANGUAGES,
-    onSelectionChanged: (selection: Pair<String, String>) -> Unit = { },
+    languageSelected: Map.Entry<String, String>,
+    languages: Map<String, String> = SUPPORTED_LANGUAGES,
+    onSelectionChanged: (selection: Map.Entry<String, String>) -> Unit = { },
     onRecordingStarts: () -> Unit = { },
     onRecordingStops: () -> Unit = { }
 ) {
     var isRecording by remember { mutableStateOf(false) }
-
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
                 shape = RoundedCornerShape(8.dp)
             )
     ) {
@@ -179,6 +177,7 @@ fun GreetingPreview() {
                 Column {
                     CardTranslationText(
                         modifier = Modifier.padding(paddingValues),
+                        languageSelected = AbstractMap.SimpleEntry("es", "Spanish"),
                         contentText = "Hola que tal?"
                     )
                 }

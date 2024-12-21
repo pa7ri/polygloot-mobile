@@ -8,7 +8,7 @@ import android.util.Base64
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.AUDIO_RESPONSE_NAME
-import com.polygloot.mobile.android.ui.utils.Consts.Companion.REQUEST_RECORD_AUDIO_PERMISSION
+import com.polygloot.mobile.android.ui.utils.Consts.Companion.REQUEST_PERMISSIONS
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -20,10 +20,10 @@ class AudioUtils {
             context, Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
 
-        fun requestAudioPermissions(context: Activity) = ActivityCompat.requestPermissions(
+        fun requestAppPermissions(context: Activity) = ActivityCompat.requestPermissions(
             context,
-            arrayOf(Manifest.permission.RECORD_AUDIO),
-            REQUEST_RECORD_AUDIO_PERMISSION
+            arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.ACCESS_COARSE_LOCATION),
+            REQUEST_PERMISSIONS
         )
 
         fun decodeBase64Audio(base64Audio: String): ByteArray {

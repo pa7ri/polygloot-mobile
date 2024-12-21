@@ -21,7 +21,7 @@ data class Message(
     val role: String,
     val content: String? = null,
     val refusal: String? = null,
-    val audio: Audio
+    val audio: Audio? = null
 )
 
 @Serializable

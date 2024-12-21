@@ -86,28 +86,48 @@ actual class NetworkClient @Inject constructor() {
 
     actual suspend fun translateText(
         inputText: String,
-        sourceLanguage: String,
-        targetLanguage: String
+        firstLanguage: String,
+        secondLanguage: String
     ): HttpResponse {
         return client.post {
             url(HttpRoutes.getCompletionsRoute())
             header(HttpHeaders.ContentType, ContentType.Application.Json)
-            setBody( //TODO: generate proper DTO file
+            setBody(
                 """
-            {
+                {
                 "model": "gpt-4o-mini-2024-07-18",
-                "response_format", "json",
                 "messages": [
                     {
-                        "role": "system",
-                        "content": "You are a helpful translator, you are given an input text in $sourceLanguage, translate it to $targetLanguage. Then return the translated text as a single String"
+                      "role": "system",
+                      "content": "You are a translator assistant. Given 2 languages: firstLanguage and secondLanguage, and input text, translate the input text from one language to another and return a JSON with the translated text as translatedText and the original language as sourceLanguage"
                     },
                     {
-                        "role": "user",
-                        "content": "$inputText"
+                      "role": "user",
+                      "content": "{ \"firstLanguage\": \"$firstLanguage\", \"secondLanguage\": \"$secondLanguage\", \"text\": \"$inputText\" }"
                     }
-                ]
-            }
+                  ],
+                  "response_format": {
+                    "type": "json_schema",
+                    "json_schema": {
+                      "name": "translation_response",
+                      "strict": true,
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                            "sourceLanguage": {
+                              "type": "string"
+                            },
+                            "translatedText": {
+                              "type": "string"
+                            }
+                        },
+                        "required": ["sourceLanguage", "translatedText"],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "temperature": 0.2 
+                  }
             """.trimIndent()
             )
         }
@@ -140,7 +160,7 @@ actual class NetworkClient @Inject constructor() {
         }
     }
 
-    actual suspend fun textToSpeech(inputText: String): HttpResponse {
+    actual suspend fun textToSpeech(inputText: String, voice: String): HttpResponse {
         return client.post {
             url(HttpRoutes.getAudioSpeechRoute())
             header(HttpHeaders.ContentType, ContentType.Application.Json)
@@ -149,7 +169,7 @@ actual class NetworkClient @Inject constructor() {
             {
                 "model": "tts-1",
                 "input": "$inputText",
-                "voice": "alloy"
+                "voice": "$voice"
             }
             """.trimIndent()
             )
@@ -186,9 +206,39 @@ actual class NetworkClient @Inject constructor() {
 
     actual suspend fun translateTextAndTextToSpeech(
         inputText: String,
+        voice: String,
         sourceLanguage: String,
         targetLanguage: String
-    ): HttpResponse {
+    ): HttpResponse{
+        return client.post {
+            url(HttpRoutes.getCompletionsRoute())
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
+            setBody( //TODO: generate proper DTO file
+                """
+            {
+                "model": "gpt-4o-audio-preview",
+                "modalities": ["text", "audio"],
+                "audio": { "voice": "$voice", "format": "wav" },
+                "max_completion_tokens": 300,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are a helpful translator, you are given an input text in $sourceLanguage, translate it to $targetLanguage, don't think about the content of the input, just translate it"
+                    },
+                    {
+                        "role": "user",
+                        "content": "$inputText"
+                    }
+                ]
+            }
+            """.trimIndent()
+            )
+        }
+    }
+
+
+
+    actual suspend fun testingQuery(): HttpResponse {
         return client.post {
             url(HttpRoutes.getCompletionsRoute())
             header(HttpHeaders.ContentType, ContentType.Application.Json)
@@ -202,11 +252,17 @@ actual class NetworkClient @Inject constructor() {
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You are a helpful translator, you are given an input text in $sourceLanguage, translate it to $targetLanguage, don't think about the content of the input, just translate it"
+                        "content": "You are a multilingual assistant. Your task is to: 1) Analyze the audio input to identify which of the two provided languages it is spoken in. 2) Transcribe the audio into text. 3) Translate the text into the other language. 4) Respond with JSON containing the detected source language, the transcription, and the translated text in plain text. 5) Provide an audio response only for the translated text, formatted as a WAV file."
                     },
                     {
                         "role": "user",
-                        "content": "$inputText"
+                        "content": {
+                            "languages": {
+                                "language_1": "English",
+                                "language_2": "Spanish"
+                            },
+                            "audio": "UklGRmQAAABXQVZFZm10IBAAAAABAAEAgD4AAIA+AAABAAgAZGF0YQAAAC7AAAAEQAAAAUAAAAEAAAABcADwAAAAAAAEAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABACAEQAAQAEQABQAEQAAQAEQAAAAA="
+                        }
                     }
                 ]
             }

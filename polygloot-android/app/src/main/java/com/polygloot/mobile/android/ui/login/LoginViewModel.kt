@@ -23,7 +23,6 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
 
     fun login(username: String, password: String) {
         val result = loginRepository.login(username, password)
-
         if (result is DomainResult.Success) {
             _loginResult.value =
                 result.body?.let { LoginResult(success = LoggedInUserView(displayName = it.displayName)) }
