@@ -3,6 +3,8 @@
 
     <string name="action_play">Play</string>
     <string name="action_microphone">Microphone</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
 
     <string name="translator_status_idle" />
     <string name="translator_status_listening">Listening</string>
@@ -29,4 +31,9 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="action_check">Check</string>
+    <string name="remember_me">Remember me</string>
+    <string name="favorite_languages">Favorite languages</string>
+    <string name="action_search">Search</string>
+    <string name="action_clear">clear</string>
 </resources>

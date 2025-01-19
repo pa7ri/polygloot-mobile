@@ -48,7 +48,6 @@ fun LanguagePicker(
     preselected: Map.Entry<String, String>,
     onSelectionChanged: (selection: Map.Entry<String, String>) -> Unit
 ) {
-    //var selected by remember(preselected) { mutableStateOf(preselected) }
     var expanded by remember { mutableStateOf(false) }
 
     Box {

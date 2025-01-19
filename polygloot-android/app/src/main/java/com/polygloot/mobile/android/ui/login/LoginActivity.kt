@@ -1,19 +1,24 @@
 package com.polygloot.mobile.android.ui.login
 
 import android.content.Intent
-import androidx.lifecycle.Observer
 import android.os.Bundle
-import androidx.annotation.StringRes
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,36 +29,42 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.Observer
 import com.polygloot.mobile.android.R
+import com.polygloot.mobile.android.ui.theme.CredentialsRememberField
 import com.polygloot.mobile.android.ui.theme.LoginField
 import com.polygloot.mobile.android.ui.theme.PasswordField
 import com.polygloot.mobile.android.ui.theme.PolyglootTheme
 import com.polygloot.mobile.android.ui.translator.TranslatorActivity
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.EXTRAS_LOGIN_USERNAME
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
 
     private val viewModel by viewModels<LoginViewModel>()
 
+    @Inject
+    lateinit var dataStore: DataStore<Preferences>
+
+    @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        viewModel.loadCredentials(dataStore)
 
         setContent {
             PolyglootTheme {
-                var username by remember { mutableStateOf("") }
-                var password by remember { mutableStateOf("") }
+                val keyboardVisible = WindowInsets.isImeVisible
+                val imeBottomPadding = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
                 LaunchedEffect(Unit) {
                     viewModel.loginResult.observe(this@LoginActivity, Observer { it ->
                         val loginResult = it ?: return@Observer
@@ -82,34 +93,48 @@ class LoginActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 50.dp, start = 10.dp, end = 10.dp),
-                                value = username,
+                                value = viewModel.username.value,
                                 onValueChange = {
-                                    username = it
-                                    viewModel.loginDataChanged(username, password)
+                                    viewModel.onUsernameChanged(it)
                                 }
                             )
                             PasswordField(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(10.dp),
-                                value = password,
+                                value = viewModel.password.value,
                                 onValueChange = {
-                                    password = it
-                                    viewModel.loginDataChanged(username, password)
+                                    viewModel.onPasswordChanged(it)
+                                },
+                                onDone = {
+                                    viewModel.login(dataStore)
                                 }
                             )
+                            CredentialsRememberField(
+                                isChecked = viewModel.isChecked.value,
+                                onValueChange = {
+                                    viewModel.onCheckedChanged(it)
+                                }
+                            )
+
                             Spacer(modifier = Modifier.weight(1f))
-                            Button(modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(4.dp),
-                                colors = ButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                                    disabledContainerColor = Color.DarkGray,
-                                    disabledContentColor = Color.Gray
-                                ), onClick = {
-                                    viewModel.login(username, password)
-                                }) {
-                                Text("Login".uppercase())
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = if (keyboardVisible) imeBottomPadding else 16.dp)
+                            ) {
+                                Button(modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(4.dp),
+                                    colors = ButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                                        disabledContainerColor = Color.DarkGray,
+                                        disabledContentColor = Color.Gray
+                                    ), onClick = {
+                                        viewModel.login(dataStore)
+                                    }) {
+                                    Text("Login".uppercase())
+                                }
                             }
                         }
                     }

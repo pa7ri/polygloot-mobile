@@ -1,9 +1,14 @@
 package com.polygloot.mobile.android.ui.utils
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import java.util.AbstractMap.SimpleEntry
 
 class Consts {
     companion object {
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "preferences.settings")
 
         const val REQUEST_PERMISSIONS = 200
         const val REQUEST_CODE_GOOGLE_PLAY_SERVICES = 1002
@@ -14,7 +19,14 @@ class Consts {
         const val AUDIO_OUTPUT_FILE_NAME = "audio_output.mp3"
         const val AUDIO_RESPONSE_NAME = "audio_output.mp3"
 
-        const val SELECTED_LANGUAGES_KEY = "selectedLanguages"
+        const val PREFERENCES_SETTINGS = "preferences.settings"
+        const val PREFERENCES_SETTINGS_SELECTED_LANGUAGES_KEY = "selected.languages"
+
+        const val PREFERENCES_LOGIN = "preferences.login"
+        const val PREFERENCES_LOGIN_REMEMBER_CHECKED = "remember.checked"
+        const val PREFERENCES_LOGIN_REMEMBER_USERNAME = "remember.username"
+        const val PREFERENCES_LOGIN_REMEMBER_PASSWORD = "remember.password"
+
 
         const val SILENCE_DETECTOR_THRESHOLD = 2000
         const val SILENCE_DETECTOR_DURATION = 1000L

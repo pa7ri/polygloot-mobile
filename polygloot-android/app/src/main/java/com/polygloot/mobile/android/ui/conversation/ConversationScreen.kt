@@ -39,12 +39,13 @@ import com.polygloot.mobile.android.R
 import com.polygloot.mobile.android.ui.theme.ChatScreen
 import com.polygloot.mobile.android.ui.theme.LanguagePicker
 import com.polygloot.mobile.android.ui.theme.PolyglootAnimation
+import com.polygloot.mobile.android.ui.theme.SearchableMultiSelectScreen
 import com.polygloot.mobile.android.ui.translator.ErrorType
 import com.polygloot.mobile.android.ui.translator.TranslatorActivity
 import com.polygloot.mobile.android.ui.translator.TranslatorStatusError
 import com.polygloot.mobile.android.ui.translator.TranslatorStatusLoading
 import com.polygloot.mobile.android.ui.utils.AudioUtils.Companion.isRecordAudioPermissionGranted
-import com.polygloot.mobile.android.ui.utils.Consts.Companion.SELECTED_LANGUAGES_KEY
+import com.polygloot.mobile.android.ui.utils.Consts.Companion.PREFERENCES_SETTINGS_SELECTED_LANGUAGES_KEY
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.SUPPORTED_LANGUAGES
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -59,10 +60,11 @@ fun ConversationScreen(
 ) {
     val context = LocalContext.current
     var isRecording by remember { mutableStateOf(false) }
+
     val preferredLanguages by dataStore.data.map { preferences ->
-        preferences[stringSetPreferencesKey(SELECTED_LANGUAGES_KEY)]?.associateWith {
-            SUPPORTED_LANGUAGES[it] ?: ""
-        }?.filterValues { it != "" } ?: emptyMap()
+        preferences[stringSetPreferencesKey(PREFERENCES_SETTINGS_SELECTED_LANGUAGES_KEY)]?.associateWith {
+                SUPPORTED_LANGUAGES[it] ?: ""
+            }?.filterValues { it != "" } ?: emptyMap()
     }.collectAsState(initial = emptyMap())
 
     Box(modifier = modifier) {
@@ -129,10 +131,14 @@ fun ConversationScreen(
                 },
                 shape = RoundedCornerShape(60.dp),
                 containerColor = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(120.dp).offset(y = 40.dp)
+                modifier = Modifier
+                    .size(120.dp)
+                    .offset(y = 40.dp)
             ) {
                 Icon(
-                    modifier = Modifier.size(55.dp).padding(bottom = 20.dp),
+                    modifier = Modifier
+                        .size(55.dp)
+                        .padding(bottom = 20.dp),
                     painter = painterResource(if (isRecording) R.drawable.ic_stop else R.drawable.ic_microphone),
                     tint = MaterialTheme.colorScheme.surface,
                     contentDescription = stringResource(R.string.action_microphone)
@@ -168,7 +174,11 @@ fun ConversationScreen(
                 )
             }
 
-            else -> { }
+            else -> {}
+
+        }
+        if (preferredLanguages.isEmpty()) {
+            SearchableMultiSelectScreen(modifier, dataStore)
         }
     }
 }

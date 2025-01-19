@@ -1,6 +1,5 @@
 package com.polygloot.mobile.android.ui.translator
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +17,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,6 +35,7 @@ import com.polygloot.mobile.android.ui.utils.LocationUtils.Companion.isLocationP
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.AbstractMap
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class TranslatorActivity : ComponentActivity() {
@@ -44,7 +43,8 @@ class TranslatorActivity : ComponentActivity() {
     private val viewModel by viewModels<ConversationViewModel>()
     private val settingsViewModel by viewModels<SettingsViewModel>()
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+    @Inject
+    lateinit var dataStore: DataStore<Preferences>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,15 +54,19 @@ class TranslatorActivity : ComponentActivity() {
             PolyglootTheme {
                 val navController = rememberNavController()
                 val context = LocalContext.current
+
                 LaunchedEffect(Unit) {
-                    if (!isRecordAudioPermissionGranted(context) || !isLocationPermissionGranted(context)
+                    if (!isRecordAudioPermissionGranted(context) || !isLocationPermissionGranted(
+                            context
+                        )
                     ) {
                         requestAppPermissions(this@TranslatorActivity)
                     } else {
                         LocationUtils(activity = this@TranslatorActivity,
                             {
                                 it?.let {
-                                    viewModel.targetLanguage.value = AbstractMap.SimpleEntry(it.key, it.value)
+                                    viewModel.targetLanguage.value =
+                                        AbstractMap.SimpleEntry(it.key, it.value)
                                     lifecycleScope.launch {
                                         dataStore.edit { preferences ->
                                             preferences[stringPreferencesKey(it.key)] = it.value
@@ -72,7 +76,8 @@ class TranslatorActivity : ComponentActivity() {
                             },
                             {
                                 it?.let {
-                                    viewModel.sourceLanguage.value = AbstractMap.SimpleEntry(it.key, it.value)
+                                    viewModel.sourceLanguage.value =
+                                        AbstractMap.SimpleEntry(it.key, it.value)
                                     lifecycleScope.launch {
                                         dataStore.edit { preferences ->
                                             preferences[stringPreferencesKey(it.key)] = it.value
@@ -97,14 +102,14 @@ class TranslatorActivity : ComponentActivity() {
                                 modifier = Modifier.padding(paddingValues = paddingValues),
                                 activity = this@TranslatorActivity,
                                 viewModel = viewModel,
-                                dataStore = LocalContext.current.dataStore
+                                dataStore = dataStore
                             )
                         }
                         composable(bottomNavItems[1].title) {
                             SettingsScreen(
                                 modifier = Modifier.padding(paddingValues = paddingValues),
                                 viewModel = settingsViewModel,
-                                dataStore = LocalContext.current.dataStore
+                                dataStore = dataStore
                             )
                         }
                     }

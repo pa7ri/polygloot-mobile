@@ -3,6 +3,7 @@ package com.polygloot.mobile.android.ui.conversation
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.polygloot.mobile.android.ui.translator.ErrorType
 import com.polygloot.mobile.android.ui.translator.TranslatorResult
@@ -30,7 +31,6 @@ import javax.inject.Inject
 class ConversationViewModel @Inject constructor(
     private val repository: TranslatorRepository
 ) : ViewModel() {
-
     private var recorder: MediaRecorder? = null
     private var outputFile: String? = null
     private var outputFilePath: String? = null
