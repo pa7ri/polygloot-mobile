@@ -3,6 +3,7 @@ package com.polygloot.mobile.android.ui.theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,8 +23,13 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -81,11 +87,13 @@ fun LanguagePickerPreference(
 fun SearchableMultiSelectScreen(
     modifier: Modifier = Modifier,
     dataStore: DataStore<Preferences>,
+    cancelEnabled: Boolean = true,
     onDismiss: () -> Unit = { }
 ) {
     val scope = rememberCoroutineScope()
     val items = SUPPORTED_LANGUAGES.entries
 
+    var showWarning by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     val selectedItems = remember {
         mutableStateListOf<Map.Entry<String, String>>().apply {
@@ -109,6 +117,7 @@ fun SearchableMultiSelectScreen(
                 .padding(16.dp),
             value = searchQuery,
             label = { Text(stringResource(R.string.action_search)) },
+            placeholder = { Text(stringResource(R.string.action_select_fav_languages)) },
             onValueChange = { searchQuery = it },
             singleLine = true,
             trailingIcon = {
@@ -138,12 +147,12 @@ fun SearchableMultiSelectScreen(
                 item {
                     Text(
                         modifier = Modifier.padding(vertical = 8.dp),
-                        text = "Preferred languages",
+                        text = stringResource(R.string.preferred_languages),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.secondary
                     )
                 }
-                items(selectedItems, key = { "${it}+${UUID.randomUUID()}" }) { item ->
+                items(selectedItems.sortedBy { it.value }, key = { "${it}+${UUID.randomUUID()}" }) { item ->
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(4.dp)
@@ -163,7 +172,7 @@ fun SearchableMultiSelectScreen(
                 item {
                     Text(
                         modifier = Modifier.padding(vertical = 8.dp),
-                        text = "Other languages",
+                        text = stringResource(R.string.other_languages),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.secondary
                     )
@@ -201,27 +210,80 @@ fun SearchableMultiSelectScreen(
                     disabledContainerColor = Color.DarkGray,
                     disabledContentColor = Color.Gray
                 ), onClick = {
-                    scope.launch {
-                        saveSelectedItems(dataStore, selectedItems.map { it.key })
-                        onDismiss()
+                    if(selectedItems.size < 2) {
+                        showWarning = true
+                    } else {
+                        scope.launch {
+                            saveSelectedItems(dataStore, selectedItems.map { it.key })
+                            onDismiss()
+                        }
                     }
                 }) { Text(stringResource(R.string.action_save).uppercase()) }
 
-            Button(modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 8.dp),
-                shape = RoundedCornerShape(4.dp),
-                colors = ButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary,
-                    disabledContainerColor = Color.DarkGray,
-                    disabledContentColor = Color.Gray
-                ), onClick = { onDismiss() }) {
-                Text(stringResource(R.string.action_cancel).uppercase())
+            if(cancelEnabled) {
+                Button(modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp),
+                    shape = RoundedCornerShape(4.dp),
+                    colors = ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary,
+                        disabledContainerColor = Color.DarkGray,
+                        disabledContentColor = Color.Gray
+                    ), onClick = { onDismiss() }) {
+                    Text(stringResource(R.string.action_cancel).uppercase())
+                }
             }
         }
     }
+
+    LanguageWarningSnackbar(
+        message = stringResource(R.string.select_min_languages_warning),
+        isVisible = showWarning,
+        duration = SnackbarDuration.Short,
+        onDismiss = { showWarning = false }
+    )
 }
+
+
+@Composable
+fun LanguageWarningSnackbar(
+    message: String,
+    isVisible: Boolean,
+    duration: SnackbarDuration = SnackbarDuration.Short,
+    onDismiss: () -> Unit = {}
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    if (isVisible) {
+        LaunchedEffect(key1 = isVisible) {
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = duration
+            )
+            onDismiss()
+        }
+    }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            snackbar = {
+                Snackbar(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Text(text = message)
+                }
+            }
+        )
+    }
+}
+
 
 
 private suspend fun saveSelectedItems(

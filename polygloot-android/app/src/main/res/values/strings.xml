@@ -5,6 +5,8 @@
     <string name="action_microphone">Microphone</string>
     <string name="action_save">Save</string>
     <string name="action_cancel">Cancel</string>
+    <string name="action_search">Search</string>
+    <string name="action_clear">clear</string>
 
     <string name="translator_status_idle" />
     <string name="translator_status_listening">Listening</string>
@@ -34,6 +36,8 @@
     <string name="action_check">Check</string>
     <string name="remember_me">Remember me</string>
     <string name="favorite_languages">Favorite languages</string>
-    <string name="action_search">Search</string>
-    <string name="action_clear">clear</string>
+    <string name="preferred_languages">Preferred languages</string>
+    <string name="other_languages">Other languages</string>
+    <string name="action_select_fav_languages">Select your favorite languages</string>
+    <string name="select_min_languages_warning">Select at least two languages</string>
 </resources>

@@ -63,8 +63,8 @@ fun ConversationScreen(
 
     val preferredLanguages by dataStore.data.map { preferences ->
         preferences[stringSetPreferencesKey(PREFERENCES_SETTINGS_SELECTED_LANGUAGES_KEY)]?.associateWith {
-                SUPPORTED_LANGUAGES[it] ?: ""
-            }?.filterValues { it != "" } ?: emptyMap()
+            SUPPORTED_LANGUAGES[it] ?: ""
+        }?.filterValues { it != "" } ?: emptyMap()
     }.collectAsState(initial = emptyMap())
 
     Box(modifier = modifier) {
@@ -178,7 +178,7 @@ fun ConversationScreen(
 
         }
         if (preferredLanguages.isEmpty()) {
-            SearchableMultiSelectScreen(modifier, dataStore)
+            SearchableMultiSelectScreen(modifier, dataStore, false)
         }
     }
 }

@@ -52,7 +52,10 @@ fun TabView(tabBarItems: List<BottomNavItem>, navController: NavController) {
                 selected = selectedTabIndex == index,
                 onClick = {
                     selectedTabIndex = index
-                    navController.navigate(tabBarItem.title)
+                    navController.navigate(tabBarItem.title) {
+                        popUpTo(tabBarItem.title) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 },
                 icon = {
                     TabBarIconView(
