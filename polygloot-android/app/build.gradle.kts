@@ -79,6 +79,10 @@ dependencies {
     implementation(libs.jamal.compose.preferences)
     implementation(libs.play.services.location)
 
+    // Firebase platform
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
