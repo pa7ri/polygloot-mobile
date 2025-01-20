@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PolyglootApp" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.PolyglootApp" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:windowSplashScreenBackground">?colorSurface</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_logo</item>
         <item name="android:windowSplashScreenAnimationDuration">1000</item>

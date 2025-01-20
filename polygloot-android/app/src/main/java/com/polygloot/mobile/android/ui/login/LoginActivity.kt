@@ -32,20 +32,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.polygloot.mobile.android.R
 import com.polygloot.mobile.android.ui.theme.CredentialsRememberField
 import com.polygloot.mobile.android.ui.theme.LoginField
 import com.polygloot.mobile.android.ui.theme.PasswordField
 import com.polygloot.mobile.android.ui.theme.PolyglootTheme
+import com.polygloot.mobile.android.ui.theme.SignInButton
 import com.polygloot.mobile.android.ui.translator.TranslatorActivity
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.EXTRAS_LOGIN_USERNAME
+import com.polygloot.mobile.android.ui.utils.Consts.Companion.signInIntent
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : ComponentActivity() {
 
     private val viewModel: LoginViewModel by viewModel<LoginViewModel>()
+
+    private val signInLauncher = registerForActivityResult(FirebaseAuthUIActivityResultContract())
+    { result -> viewModel.handleSignInResult(result) }
 
     @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +114,10 @@ class LoginActivity : ComponentActivity() {
                                     viewModel.onCheckedChanged(it)
                                 }
                             )
+                            SignInButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { signInLauncher.launch(signInIntent) }
+                            )
 
                             Spacer(modifier = Modifier.weight(1f))
                             Box(
@@ -124,7 +135,7 @@ class LoginActivity : ComponentActivity() {
                                     ), onClick = {
                                         viewModel.login()
                                     }) {
-                                    Text("Login".uppercase())
+                                    Text(stringResource(R.string.action_login).uppercase())
                                 }
                             }
                         }

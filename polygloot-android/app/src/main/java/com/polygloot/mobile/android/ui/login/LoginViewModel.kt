@@ -1,5 +1,6 @@
 package com.polygloot.mobile.android.ui.login
 
+import android.app.Activity.RESULT_OK
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
@@ -11,6 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -117,6 +119,19 @@ class LoginViewModel(private val dataStore: DataStore<Preferences>) : ViewModel(
                     username.value = preferences[keyUsername] ?: ""
                     password.value = preferences[keyPassword] ?: ""
                 }
+            }
+        }
+    }
+
+    fun handleSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        val response = result.idpResponse
+        if (result.resultCode == RESULT_OK) {
+            val user = FirebaseAuth.getInstance().currentUser
+            _loginResult.value =
+                LoginResult(success = LoggedInUserView(displayName = user?.displayName ?: ""))
+        } else {
+            response?.let {
+                _loginResult.value = LoginResult(error = R.string.signin_failed)
             }
         }
     }

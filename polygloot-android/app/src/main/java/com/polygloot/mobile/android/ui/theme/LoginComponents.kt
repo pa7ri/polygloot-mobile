@@ -1,5 +1,6 @@
 package com.polygloot.mobile.android.ui.theme
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -115,11 +117,11 @@ fun PasswordField(
 
 @Composable
 fun CredentialsRememberField(
+    modifier: Modifier = Modifier,
     isChecked: Boolean,
-    onValueChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    onValueChange: (Boolean) -> Unit
 ) {
-    var isChecked by remember { mutableStateOf(isChecked) }
+    var isCheckedStatus by remember { mutableStateOf(isChecked) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -127,13 +129,31 @@ fun CredentialsRememberField(
     ) {
         Checkbox(
             modifier = Modifier.size(16.dp),
-            checked = isChecked,
+            checked = isCheckedStatus,
             onCheckedChange = {
-                isChecked = it
+                isCheckedStatus = it
                 onValueChange(it) }
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(text = stringResource(R.string.remember_me), style = MaterialTheme.typography.bodyMedium)
     }
 }
-
+@Composable
+fun SignInButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Row(
+        modifier = modifier.fillMaxWidth().padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        TextButton(
+            onClick = onClick
+        ) {
+            Text(
+                text = stringResource(R.string.action_sign_in_short),
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
+    }
+}

@@ -1,9 +1,9 @@
 package com.polygloot.mobile.android.ui.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,19 +20,17 @@ import com.polygloot.mobile.android.ui.theme.SearchableMultiSelectScreen
 
 @Composable
 fun SettingsScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     dataStore: DataStore<Preferences>
 ) {
-    Scaffold(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.surface)
-    ) { paddingValues ->
+    ) {
         val displayLanguageSelectionDialog = remember { mutableStateOf(false) }
         Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.surfaceContainer)
         ) {
             LanguagePickerPreference {
                 displayLanguageSelectionDialog.value = true

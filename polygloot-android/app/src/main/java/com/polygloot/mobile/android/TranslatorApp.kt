@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.polygloot.mobile.android.ui.conversation.ConversationViewModel
 import com.polygloot.mobile.android.ui.login.LoginViewModel
+import com.polygloot.mobile.android.ui.utils.Consts.Companion.PREFERENCES_DB
 import com.polygloot.mobile.polygloot.network.NetworkClient
 import com.polygloot.mobile.polygloot.network.repository.translator.TranslatorRepository
 import com.polygloot.mobile.polygloot.network.repository.translator.TranslatorRepositoryImpl
@@ -33,7 +34,7 @@ val dataStoreModule = module {
 
 fun provideDataStore(context: Context): DataStore<Preferences> {
     return PreferenceDataStoreFactory.create(
-        produceFile = { context.preferencesDataStoreFile("preferences.settings.preferences_pb") }
+        produceFile = { context.preferencesDataStoreFile(PREFERENCES_DB) }
     )
 }
 

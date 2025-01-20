@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jamal.composeprefs.ui.Divider
 import com.polygloot.mobile.android.R
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.SUPPORTED_LANGUAGES
 import java.util.AbstractMap
@@ -46,7 +47,8 @@ fun LanguagePicker(
     modifier: Modifier = Modifier,
     languages: Map<String, String>,
     preselected: Map.Entry<String, String>,
-    onSelectionChanged: (selection: Map.Entry<String, String>) -> Unit
+    onSelectionChanged: (selection: Map.Entry<String, String>) -> Unit,
+    onMoreLanguagesClicked: () -> Unit = { }
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -86,6 +88,22 @@ fun LanguagePicker(
                         }
                     )
                 }
+                Divider(modifier = Modifier.padding(10.dp))
+                DropdownMenuItem(
+                    onClick = {
+                        onMoreLanguagesClicked()
+                        expanded = false
+                    },
+                    text = {
+                        Text(
+                            text = (stringResource(R.string.other)),
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .wrapContentWidth()
+                                .align(Alignment.Start)
+                        )
+                    }
+                )
             }
         }
 
@@ -108,6 +126,7 @@ fun CardTranslationText(
     languageSelected: Map.Entry<String, String>,
     languages: Map<String, String> = SUPPORTED_LANGUAGES,
     onSelectionChanged: (selection: Map.Entry<String, String>) -> Unit = { },
+    onMoreLanguagesClicked: () -> Unit = { },
     onRecordingStarts: () -> Unit = { },
     onRecordingStops: () -> Unit = { }
 ) {
@@ -139,7 +158,8 @@ fun CardTranslationText(
                     Modifier.padding(10.dp),
                     preselected = languageSelected,
                     languages = languages,
-                    onSelectionChanged = { onSelectionChanged(it) }
+                    onSelectionChanged = { onSelectionChanged(it) },
+                    onMoreLanguagesClicked = onMoreLanguagesClicked
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 FloatingActionButton(

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,13 +52,14 @@ import java.util.AbstractMap
 
 @Composable
 fun ConversationScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     activity: TranslatorActivity,
     viewModel: ConversationViewModel,
     dataStore: DataStore<Preferences>
 ) {
     val context = LocalContext.current
     var isRecording by remember { mutableStateOf(false) }
+    var showLanguageSelectionDialog by remember { mutableStateOf(false) }
 
     val preferredLanguages by dataStore.data.map { preferences ->
         preferences[stringSetPreferencesKey(PREFERENCES_SETTINGS_SELECTED_LANGUAGES_KEY)]?.associateWith {
@@ -70,7 +70,6 @@ fun ConversationScreen(
     Box(modifier = modifier) {
         Column(
             modifier = Modifier
-                .padding(top = 24.dp)
                 .align(Alignment.Center)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
@@ -87,7 +86,8 @@ fun ConversationScreen(
                     languages = preferredLanguages,
                     onSelectionChanged = {
                         viewModel.sourceLanguage.value = AbstractMap.SimpleEntry(it.key, it.value)
-                    }
+                    },
+                    onMoreLanguagesClicked = { showLanguageSelectionDialog = true }
                 )
                 Icon(
                     imageVector = Icons.Outlined.SwapHoriz,
@@ -100,7 +100,8 @@ fun ConversationScreen(
                     languages = preferredLanguages,
                     onSelectionChanged = {
                         viewModel.targetLanguage.value = AbstractMap.SimpleEntry(it.key, it.value)
-                    }
+                    },
+                    onMoreLanguagesClicked = { showLanguageSelectionDialog = true }
                 )
             }
 
@@ -132,13 +133,11 @@ fun ConversationScreen(
                 shape = RoundedCornerShape(60.dp),
                 containerColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .size(120.dp)
-                    .offset(y = 40.dp)
+                    .size(100.dp)
+                    .padding(10.dp)
             ) {
                 Icon(
-                    modifier = Modifier
-                        .size(55.dp)
-                        .padding(bottom = 20.dp),
+                    modifier = Modifier.size(30.dp),
                     painter = painterResource(if (isRecording) R.drawable.ic_stop else R.drawable.ic_microphone),
                     tint = MaterialTheme.colorScheme.surface,
                     contentDescription = stringResource(R.string.action_microphone)
@@ -177,8 +176,10 @@ fun ConversationScreen(
             else -> {}
 
         }
-        if (preferredLanguages.isEmpty()) {
-            SearchableMultiSelectScreen(modifier, dataStore, false)
+        if (preferredLanguages.isEmpty() || showLanguageSelectionDialog) {
+            SearchableMultiSelectScreen(modifier, dataStore, preferredLanguages.isEmpty()) {
+                showLanguageSelectionDialog = false
+            }
         }
     }
 }

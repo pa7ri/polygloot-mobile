@@ -1,14 +1,22 @@
 package com.polygloot.mobile.android.ui.utils
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
+import com.firebase.ui.auth.AuthUI
+import com.polygloot.mobile.android.R
 import java.util.AbstractMap.SimpleEntry
 
 class Consts {
     companion object {
-        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "preferences.settings")
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
+
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .setLogo(R.drawable.ic_logo)
+            .setTheme(R.style.Theme_PolyglootApp)
+            .build()
 
         const val REQUEST_PERMISSIONS = 200
         const val REQUEST_CODE_GOOGLE_PLAY_SERVICES = 1002
@@ -19,10 +27,9 @@ class Consts {
         const val AUDIO_OUTPUT_FILE_NAME = "audio_output.mp3"
         const val AUDIO_RESPONSE_NAME = "audio_output.mp3"
 
-        const val PREFERENCES_SETTINGS = "preferences.settings"
+        const val PREFERENCES_DB = "preferences.settings.preferences_pb"
         const val PREFERENCES_SETTINGS_SELECTED_LANGUAGES_KEY = "selected.languages"
 
-        const val PREFERENCES_LOGIN = "preferences.login"
         const val PREFERENCES_LOGIN_REMEMBER_CHECKED = "remember.checked"
         const val PREFERENCES_LOGIN_REMEMBER_USERNAME = "remember.username"
         const val PREFERENCES_LOGIN_REMEMBER_PASSWORD = "remember.password"
@@ -33,7 +40,10 @@ class Consts {
 
         fun countryToSupportedLanguage(countryCode: String): Map.Entry<String, String> {
             val languageCode = COUNTRY_TO_LANGUAGE.getOrDefault(countryCode, "en")
-            return SimpleEntry(languageCode, SUPPORTED_LANGUAGES.getOrDefault(languageCode, "English"))
+            return SimpleEntry(
+                languageCode,
+                SUPPORTED_LANGUAGES.getOrDefault(languageCode, "English")
+            )
         }
 
         /**
