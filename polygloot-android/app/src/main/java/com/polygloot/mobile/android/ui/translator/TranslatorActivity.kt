@@ -24,7 +24,6 @@ import androidx.navigation.compose.rememberNavController
 import com.polygloot.mobile.android.ui.conversation.ConversationScreen
 import com.polygloot.mobile.android.ui.conversation.ConversationViewModel
 import com.polygloot.mobile.android.ui.settings.SettingsScreen
-import com.polygloot.mobile.android.ui.settings.SettingsViewModel
 import com.polygloot.mobile.android.ui.theme.PolyglootTheme
 import com.polygloot.mobile.android.ui.theme.TabView
 import com.polygloot.mobile.android.ui.theme.bottomNavItems
@@ -32,19 +31,15 @@ import com.polygloot.mobile.android.ui.utils.AudioUtils.Companion.isRecordAudioP
 import com.polygloot.mobile.android.ui.utils.AudioUtils.Companion.requestAppPermissions
 import com.polygloot.mobile.android.ui.utils.LocationUtils
 import com.polygloot.mobile.android.ui.utils.LocationUtils.Companion.isLocationPermissionGranted
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.inject
 import java.util.AbstractMap
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class TranslatorActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<ConversationViewModel>()
-    private val settingsViewModel by viewModels<SettingsViewModel>()
-
-    @Inject
-    lateinit var dataStore: DataStore<Preferences>
+    private val viewModel: ConversationViewModel by viewModel<ConversationViewModel>()
+    private val dataStore: DataStore<Preferences> by inject(clazz = DataStore::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +103,6 @@ class TranslatorActivity : ComponentActivity() {
                         composable(bottomNavItems[1].title) {
                             SettingsScreen(
                                 modifier = Modifier.padding(paddingValues = paddingValues),
-                                viewModel = settingsViewModel,
                                 dataStore = dataStore
                             )
                         }

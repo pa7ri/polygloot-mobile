@@ -21,7 +21,6 @@ import com.polygloot.mobile.android.ui.theme.SearchableMultiSelectScreen
 @Composable
 fun SettingsScreen(
     modifier: Modifier,
-    viewModel: SettingsViewModel,
     dataStore: DataStore<Preferences>
 ) {
     Scaffold(

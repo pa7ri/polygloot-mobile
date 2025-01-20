@@ -1,20 +1,19 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.services)
 }
 
 android {
     namespace = "com.polygloot.mobile.android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.polygloot.mobile.android"
         minSdk = 31
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -42,9 +41,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.5"
     }
     packaging {
         resources {
@@ -81,6 +77,7 @@ dependencies {
 
     // Firebase platform
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
 
     testImplementation(libs.junit)
@@ -91,6 +88,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.android)
+    implementation(libs.koin.core)
 }

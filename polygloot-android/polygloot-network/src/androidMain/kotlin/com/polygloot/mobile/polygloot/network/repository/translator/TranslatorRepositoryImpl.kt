@@ -8,9 +8,8 @@ import com.polygloot.mobile.polygloot.network.repository.toDomainResult
 import com.polygloot.mobile.polygloot.network.service.TranslatorOpenAIService
 import kotlinx.serialization.json.Json
 import java.io.File
-import javax.inject.Inject
 
-class TranslatorRepositoryImpl @Inject constructor(private val service: TranslatorOpenAIService) :
+class TranslatorRepositoryImpl(private val service: TranslatorOpenAIService) :
     TranslatorRepository {
     override suspend fun detectLanguage(text: String): DomainResult<String> =
         service.detectLanguage(text).toDomainResult { it }
@@ -29,7 +28,11 @@ class TranslatorRepositoryImpl @Inject constructor(private val service: Translat
         }
 
 
-    override suspend fun textToSpeech(text: String, voice: String, outputFile: File): DomainResult<Boolean> =
+    override suspend fun textToSpeech(
+        text: String,
+        voice: String,
+        outputFile: File
+    ): DomainResult<Boolean> =
         service.textToSpeech(text, voice, outputFile).toDomainResult { it.isFile }
 
     override suspend fun translateTextAndTTS(

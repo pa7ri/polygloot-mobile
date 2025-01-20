@@ -18,9 +18,8 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import java.io.File
-import javax.inject.Inject
 
-actual class NetworkClient @Inject constructor() {
+actual class NetworkClient {
 
     private val openAIApiKey = BuildConfig.OPENAI_API_KEY
 

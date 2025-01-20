@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
 import java.util.Properties
 
 plugins {
@@ -7,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.library)
-    alias(libs.plugins.hilt)
 }
 
 android {
@@ -25,7 +22,6 @@ android {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "OPENAI_API_KEY", "\"${properties.getProperty("OPENAI_API_KEY")}\"")
-        buildConfigField("String", "POLYGLOOT_TESTING_CREDENTIALS", "\"${properties.getProperty("POLYGLOOT_TESTING_CREDENTIALS")}\"")
     }
 
     kotlin {
@@ -73,15 +69,6 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.ktor.client.android)
-                implementation(libs.hilt.android)
-
-                configurations.getByName("kapt").dependencies.add(
-                    org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency(
-                        "com.google.dagger",
-                        "hilt-android-compiler",
-                        libs.versions.hilt.get()
-                    )
-                )
             }
         }
 
@@ -95,12 +82,10 @@ kotlin {
                 languageVersion = "1.9"
                 apiVersion = "1.9"
                 optIn("kotlinx.serialization.ExperimentalSerializationApi")
-                progressiveMode = true
             }
 
         }
     }
-    // Configure all compilations of all targets:
     targets.all {
         compilations.all {
             compilerOptions.configure {

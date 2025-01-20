@@ -3,7 +3,6 @@ package com.polygloot.mobile.android.ui.conversation
 import android.content.Context
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.polygloot.mobile.android.ui.translator.ErrorType
 import com.polygloot.mobile.android.ui.translator.TranslatorResult
@@ -17,7 +16,6 @@ import com.polygloot.mobile.android.ui.utils.Consts.Companion.AUDIO_INPUT_FILE_N
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.AUDIO_OUTPUT_FILE_NAME
 import com.polygloot.mobile.polygloot.network.repository.DomainResult
 import com.polygloot.mobile.polygloot.network.repository.translator.TranslatorRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
@@ -25,12 +23,8 @@ import java.io.File
 import java.io.IOException
 import java.util.AbstractMap.SimpleEntry
 import java.util.Locale
-import javax.inject.Inject
 
-@HiltViewModel
-class ConversationViewModel @Inject constructor(
-    private val repository: TranslatorRepository
-) : ViewModel() {
+class ConversationViewModel(private val repository: TranslatorRepository) : ViewModel() {
     private var recorder: MediaRecorder? = null
     private var outputFile: String? = null
     private var outputFilePath: String? = null

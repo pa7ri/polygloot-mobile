@@ -1,8 +1,5 @@
 package com.polygloot.mobile.android.ui.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
@@ -10,21 +7,23 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.polygloot.mobile.android.R
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.PREFERENCES_LOGIN_REMEMBER_CHECKED
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.PREFERENCES_LOGIN_REMEMBER_PASSWORD
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.PREFERENCES_LOGIN_REMEMBER_USERNAME
-import com.polygloot.mobile.polygloot.network.repository.login.LoginRepository
-import com.polygloot.mobile.polygloot.network.repository.DomainResult
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class LoginViewModel @Inject constructor(private val loginRepository: LoginRepository) :
-    ViewModel() {
+class LoginViewModel(private val dataStore: DataStore<Preferences>) : ViewModel() {
+
+    private var auth: FirebaseAuth = Firebase.auth
 
     var username = mutableStateOf("")
     var password = mutableStateOf("")
@@ -36,16 +35,28 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun login(dataStore: DataStore<Preferences>) {
-        val result = loginRepository.login(username.value, password.value)
-        if (result is DomainResult.Success) {
-            _loginResult.value =
-                result.body?.let { LoginResult(success = LoggedInUserView(displayName = it.displayName)) }
-                    ?: LoginResult(error = R.string.login_failed)
-            saveCredentials(dataStore)
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
-        }
+    init {
+        loadCredentials()
+    }
+
+    fun login() {
+        auth.signInWithEmailAndPassword(username.value, password.value)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _loginResult.value =
+                        task.result.user?.let {
+                            LoginResult(
+                                success = LoggedInUserView(
+                                    displayName = it.displayName ?: ""
+                                )
+                            )
+                        }
+                            ?: LoginResult(error = R.string.login_failed)
+                    saveCredentials()
+                } else {
+                    _loginResult.value = LoginResult(error = R.string.login_failed)
+                }
+            }
     }
 
     fun onUsernameChanged(updatedUsername: String) {
@@ -82,7 +93,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
         return password.length > 5
     }
 
-    private fun saveCredentials(dataStore: DataStore<Preferences>) {
+    private fun saveCredentials() {
         viewModelScope.launch {
             dataStore.edit { preferences ->
                 preferences[stringPreferencesKey(PREFERENCES_LOGIN_REMEMBER_USERNAME)] =
@@ -95,7 +106,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
         }
     }
 
-    fun loadCredentials(dataStore: DataStore<Preferences>) {
+    fun loadCredentials() {
         viewModelScope.launch {
             val keyUsername = stringPreferencesKey(PREFERENCES_LOGIN_REMEMBER_USERNAME)
             val keyPassword = stringPreferencesKey(PREFERENCES_LOGIN_REMEMBER_PASSWORD)

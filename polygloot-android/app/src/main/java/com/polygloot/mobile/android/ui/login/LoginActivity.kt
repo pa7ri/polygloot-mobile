@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,8 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.Observer
 import com.polygloot.mobile.android.R
 import com.polygloot.mobile.android.ui.theme.CredentialsRememberField
@@ -44,22 +41,16 @@ import com.polygloot.mobile.android.ui.theme.PasswordField
 import com.polygloot.mobile.android.ui.theme.PolyglootTheme
 import com.polygloot.mobile.android.ui.translator.TranslatorActivity
 import com.polygloot.mobile.android.ui.utils.Consts.Companion.EXTRAS_LOGIN_USERNAME
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<LoginViewModel>()
-
-    @Inject
-    lateinit var dataStore: DataStore<Preferences>
+    private val viewModel: LoginViewModel by viewModel<LoginViewModel>()
 
     @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        viewModel.loadCredentials(dataStore)
 
         setContent {
             PolyglootTheme {
@@ -107,7 +98,7 @@ class LoginActivity : ComponentActivity() {
                                     viewModel.onPasswordChanged(it)
                                 },
                                 onDone = {
-                                    viewModel.login(dataStore)
+                                    viewModel.login()
                                 }
                             )
                             CredentialsRememberField(
@@ -131,7 +122,7 @@ class LoginActivity : ComponentActivity() {
                                         disabledContainerColor = Color.DarkGray,
                                         disabledContentColor = Color.Gray
                                     ), onClick = {
-                                        viewModel.login(dataStore)
+                                        viewModel.login()
                                     }) {
                                     Text("Login".uppercase())
                                 }
