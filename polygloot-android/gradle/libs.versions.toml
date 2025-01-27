@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.1"
+agp = "8.7.3"
 firebaseUiAuth = "7.2.0"
 gms = "4.4.2"
 coreSplashscreen = "1.0.1"
